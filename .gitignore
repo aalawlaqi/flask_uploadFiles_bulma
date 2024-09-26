@@ -2,5 +2,6 @@ venv/
 venv
 .venv
 *.ds_store
-*.txt
+history.txt
+.gitignore
 steps

@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>File Upload</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <style>
+        .file-label {
+            width: 100%;
+        }
+        .file-cta {
+            flex-grow: 1;
+        }
+    </style>
 </head>
 <body>
     <section class="section">
@@ -21,20 +29,26 @@
                 {% endif %}
             {% endwith %}
             
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" enctype="multipart/form-data" id="uploadForm">
                 <div class="field">
-                    <label class="file-label">
-                        <input class="file-input" type="file" name="file" accept="*/*">
-                        <span class="file-cta">
-                            <span class="file-icon">
-                                <i class="fas fa-upload"></i>
+                    <div class="file has-name is-fullwidth">
+                        <label class="file-label">
+                            <input class="file-input" type="file" name="file" accept="*/*" id="fileInput">
+                            <span class="file-cta">
+                                <span class="file-icon">
+                                    <i class="fas fa-upload"></i>
+                                </span>
+                                <span class="file-label">Choose a file…</span>
                             </span>
-                            <span class="file-label">Choose a file…</span>
-                        </span>
-                        <span class="file-name">No file chosen</span>
-                    </label>
+                            <span class="file-name" id="fileName">No file chosen</span>
+                        </label>
+                    </div>
                 </div>
-                <button type="submit">Upload</button>
+                <div class="field">
+                    <div class="control">
+                        <button type="submit" class="button is-primary">Upload</button>
+                    </div>
+                </div>
             </form>
             
             <div class="mt-4">
@@ -42,16 +56,32 @@
             </div>
         </div>
     </section>
-
     <script>
-        const fileInput = document.querySelector('.file-input');
-        const fileName = document.querySelector('.file-name');
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                fileName.textContent = e.target.files[0].name;
-            } else {
-                fileName.textContent = 'No file chosen';
-            }
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fileInput');
+            const fileName = document.getElementById('fileName');
+            const form = document.getElementById('uploadForm');
+
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    fileName.textContent = e.target.files[0].name;
+                } else {
+                    fileName.textContent = 'No file chosen';
+                }
+            });
+
+            // Handle form submission
+            form.addEventListener('submit', function(e) {
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    e.preventDefault();
+                    alert('Please select a file before uploading.');
+                }
+            });
+
+            // Additional handler for iOS devices
+            document.querySelector('.file-cta').addEventListener('click', function(e) {
+                fileInput.click();
+            });
         });
     </script>
 </body>
